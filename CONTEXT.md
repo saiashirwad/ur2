@@ -25,6 +25,10 @@ _Avoid_: non-overlap
 **Row unification**:
 Deciding whether two rows, possibly with unknown parts, can be made equal, and what the unknowns must be.
 
+**Unification variable**:
+A placeholder for a type (or row) the checker doesn't know yet, filled in as unification solves equations. Written `?a` or `?r` in our notes.
+_Avoid_: type hole, inference variable, metavariable (all common in the literature; we use one name)
+
 **Normalization**:
 Rewriting a type-level expression into a standard form so that two expressions can be compared.
 

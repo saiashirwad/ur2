@@ -1,0 +1,805 @@
+========
+20200209
+========
+
+- New invocation mode 'urweb daemon restart'
+- Disallow wildcards in signatures
+- At compile time, start allowing "#" as a URL
+- New option '-u' for generated HTTP servers, to use UNIX sockets
+- New HTML tag attribute: 'step' (for <crange>)
+- New SQL function: 'similar' (via pg_trgm)
+- New List function: foldli
+- New Json functions: json_record_withOptional, json_time, rfc3339_in, rfc3339_out
+- New Datetime member: ord_month
+- New JavaScript FFI function 'listen'
+- Experimental support for the Language Server Protocol (helpful for IDEs)
+- Bug fixes and improvements to documentation, error messages, performance, and compatibility
+
+========
+20190217
+========
+
+- Update of standard-library string functions to handle non-ASCII UTF-8 properly
+- New command-line options: -endpoints
+- New .urp directive: safeGetDefault
+- New Basis functions: textOfBlob, unsafeSerialized[To|From]String
+- New Top functions: mapX4, foldR4
+- New List functions: allM, assocAddSorted, mapConcat, mapConcatM, mapMi, searchM
+- New ListPair functions: mapM, unzip
+- New Option function: mapM
+- Flycheck integration
+- Bug fixes and improvements to type inference, documentation, error messages, and compatibility
+
+========
+20180616
+========
+
+- New feature to cache files stored in the database as blobs, via the
+  'filecache' .urp directive
+- New .urp directives: 'mimeTypes' and 'file' (new long form)
+- New HTML pseudo-tag: <cradio>
+- New HTML tag attributes: 'oninput', 'onscroll', 'title', 'size'
+- New standard-library functions: 'List.findM' and 'List.existsM'
+- New '-help' command-line option for compiler
+- Remove insecure function 'Basis.crypt' (which didn't seem to have any users)
+- Selenium-based automatic testing
+- Bug fixes and improvements to documentation and error messages
+
+========
+20170720
+========
+
+- New .urp directive: 'jsModule'
+- New compiler command-line option: '-js'
+- New HTML attribute for <button>: 'disabled'
+- Allow inexhaustive patterns for lefthand sides of top-level 'val' declarations
+- New standard-library functions: 'List.appi' and 'Option.app'
+- Support for Emacs bg-build mode
+- Bug fixes and improvements to error messages
+
+========
+20170105
+========
+
+- Allow qualified variable references in record literals
+- Add 'placeholder' attribute for textareas
+- Add more explicit build instructions to main demo
+- Bug fixes
+
+========
+20161022
+========
+
+- Add Json module to standard library
+- Make HTML5 the default and add 'xhtml' .urp directive
+- Remove 'Value' attributes for AJAX-y UI widgets, because they should use 'Source' instead
+- Change compiler to support reproducible builds, via replacement of timestamp
+  calculation with different methods or use of content hashes
+- IPv6 support in HTTP-server binaries, via '-A' command-line option
+- New Top function: mapUX_rev
+- Bug fixes and documentation improvements
+
+========
+20160805
+========
+
+- Compatibility fixes for C compilers and OpenSSL
+- Starting to change SQL functions to return results in most natural order
+  - Step 1: queryL
+- Bug fixes
+
+========
+20160621
+========
+
+- Client-side: detect session timeout and ask the user to reload
+- New Basis math functions: abs, acos, asin, atan, atan2, cos, exp, floor, log, pow, sqrt, sin
+- Compatibility fixes for newer C and SML compilers
+- Bug fixes
+
+========
+20160515
+========
+
+- Support for HTML <meta> tags
+- Resource-integrity attributes for HTML <link>
+- Bug fixes and optimization improvements
+
+========
+20160306
+========
+
+- Allow '\r' in string and character literals
+- New standard library functions: List.span and List.groupBy
+- Bug fixes
+
+========
+20160213
+========
+
+- .urp 'library' directive: only process a given library the first time it is referenced
+- For maintenance of Ur/Web project source code, switched from Mercurial to Git
+- Added Travis integration
+- Bug fixes and improvements to type inference and compatibility
+
+========
+20151220
+========
+
+- New .urp directive: 'jsFile'
+- Merged an experimental automatic caching optimization, triggered with '-sqlcache'
+- Bug fixes
+
+========
+20151122
+========
+
+- Daemon mode now supports shared caching of libraries across projects.
+- Change behavior of SQL equality to do the intuitive thing for nullable types.
+- Basis.fromMilliseconds
+- Bug fixes and improvements to type inference and error messages
+
+========
+20151018
+========
+
+- Applications now reconnect to database server automatically after losing connection.
+- Bug fixes and improvements to compatibility, documentation, and error messages
+
+========
+20150819
+========
+
+- Allow mouse and key events for <body>
+- Add HTML 'align' attribute
+- Add onChange handler to radioOption
+- New literal [_LOC_] that is replaced with textual information on location in source file
+- Add a simple 'make test' target
+- Bug fixes and documentation improvements
+
+========
+20150520
+========
+
+- Change default behavior of client-side GUI event handlers:
+  By default, events are now passed to handlers on parent DOM nodes as well,
+  just like in normal JavaScript.
+  Call [preventDefault] or [stopPropagation] to tweak that behavior.
+  WARNING: This change may break backward compatibility!
+- URIs specified with 'file' .urp directive are implicitly allowed to be referenced.
+- New HTML tags: <fieldset>, <legend>
+- New urweb-mode Emacs command: 'urweb-close-matching-tag'
+- Bug fixes
+
+========
+20150412
+========
+
+- Several new infix operators for function composition, etc.
+- Hexadecimal integer literals
+- New HTML events: 'oncontextmenu', 'onmouseenter', and 'onmouseleave'
+- New HTML attributes: 'download'
+- Bug fixes and optimization improvements
+
+========
+20150214
+========
+
+- Bug fixes and improvements to type inference and optimization
+
+========
+20150103
+========
+
+- New antiquote syntax for 'ORDER BY' clauses
+- New standard library function: List.mem
+- Bug fixes and improvements to type inference
+
+========
+20141206
+========
+
+- New HTML5 form widget tags and attributes
+- New command-line option for HTTP servers: '-T', to set recv() timeout
+- New C function uw_remoteSock() for use in FFI code
+- Bug fixes and improvements to type inference and optimization
+
+========
+20140830
+========
+
+- New HTML attribute: 'role'
+- Bug fixes
+
+========
+20140819
+========
+
+- Improvements to HTML model
+- Bug fixes and optimization improvements
+
+========
+20140807
+========
+
+- New .urp directive: 'file'
+- Support for 'aria-*' attributes in HTML
+- Default value of 'jsFunc' for less-safe FFI
+- Client-side implementation of Basis function 'strsindex'
+- Bug fixes and improvements to type inference and documentation
+
+========
+20140704
+========
+
+- New syntactic shorthand for antiquoting subqueries
+- New Top members: max and min
+- 'sql_injectable_prim' instance for 'url'
+- Bug fixes
+
+========
+20140615
+========
+
+- New syntactic sugar: 'let E where DS end' for 'let DS in E end'
+- Add 'onChange' attributes to more tags.
+- New standard library function: String.trim
+- Start treating Ur/Web tag <button> as real HTML tag <button>,
+  with special handling of 'value' attribute as tag content.
+- Bug fixes
+
+========
+20140531
+========
+
+- Parsing extension: monadic bind supports patterns, like "(x, y) <- a; b"
+- New, optional less safe FFI
+- New HTML tags: <tbody>, <tfoot>, <thead>
+- HTML5 data-* attributes
+- HTML5 semantic tags
+- Syntactic sugar extension: allow parens grouping joins in FROM clauses
+- Bug fixes and documentation improvements
+
+========
+20140426
+========
+
+- New Basis functions having to do with dates and times, wrapped nicely in new
+  Datetime module of standard library
+- New .urp directives: 'html5', 'neverInline', 'noMangleSql'
+- New command-line arguments: '-explainEmbed', '-stop'
+- Changes to C FFI interface, especially for uw_register_transactional()
+- 'Basis.getEnv' now always calls UNIX getenv() outside a page handler.
+- Changed <active> to avoid generating an empty <span> for empty content.
+- New HTML tag: <pre>
+- Bug fixes and improvements to type inference, optimizations, and documentation
+
+========
+20131231
+========
+
+- Performance optimizations for Ur/Web's standalone HTTP servers
+- New command-line options for those servers: '-k' and '-q'
+- New HTML pseudo-tag: <script>
+- Trying to recv() from a different client's channel now triggers a run-time
+  error.
+- New compiler command-line argument: -print-cinclude
+- Bug fixes and improvements to optimizations, error messages, and documentation
+
+========
+20131124
+========
+
+- Extend 'where con' to allow descending into submodule structure
+- Type inference improvements
+- Treat transactional FFI functions as effectful by default,
+  so that 'effectful'/'benignEffectful' .urp directives aren't necessary
+- Interpret 'table' signature items more flexibly,
+  automatically adding (Ur) constraints to support
+  a kind of subtyping over (SQL) constraint sets
+- New header file scheme to support FFI code in either of C or C++
+- New command-line arguments: -ccompiler, -print-ccompiler
+- More HTML tags: <dd>, <dl>, <dt>, <em>, and <strong>
+- Add 'rel' attribute to <a>
+- New type synonym 'xhead'
+- Refactored the development Mercurial repository to remove autogenerated files
+- More integration with Autotools distribution functionality
+- Improvements to documentation and compiler error messages
+- Bug fixes and optimization improvements
+
+========
+20130421
+========
+
+- Allow any FFI module to declare new HTML tags
+- Ignore polymorphism in JavaScript calls to custom FFI functions, allowing a
+  kind of simple dynamic typing (unsafe, of course)
+- Add some name-mangling rules to allow XML attribute 'name' and attributes with
+  dashes
+- New Basis members: pow and tryRpc
+- Add 'placeholder' attribute for <password>
+- New standard library functions: Option.unsafeGet
+- Add ./configure MLTONARGS option for MLTON arguments
+- Bug fixes and documentation improvements
+
+========
+20120925
+========
+
+- Changes to optimization/compilation strategy that can speed up compilation and
+  reduce code size dramatically
+- New .urp directives: 'coreInline' and 'monoInline'
+- 'show' instance for 'sql_query'
+- Improvements to compiler error messages
+- Bug fixes and optimization improvements
+
+========
+20120807
+========
+
+- Client-side mouse and keyboard event handlers are now functions over records.
+- More flexibility in local type class instances
+- Remove 'class' declaration; use 'con' instead now.
+- SQL window functions
+- New HTML pseudo-tag: <active>
+- New Basis members: getenv (and associated functions), giveFocus
+- New Top member: postFields (to process POST form data when called by some external script)
+- HTTP daemons take '-a' option to set IP address to listen on
+- More global mouse event hooks
+- Bug fixes and performance improvements
+
+========
+20120519
+========
+
+- Compatibility fixes for new Automake and GCC versions
+- Allow synchronous RPC's in 'onunload' code
+- Start of special cases for parsing CSS class names: interpret "table" as identifier 'tabl'
+  (since 'table' is an Ur/Web keyword)
+- Bug fixes and improvements to type inference and optimization
+
+========
+20120512
+========
+
+- New support for CSS style code embedded in Ur/Web programs.
+  Two recommended usage methods:
+  1. Use 'style' attributes with normal CSS syntax inside string literals.
+  2. Generate styles programmatically with the Style module of the Gui library
+     (distributed separately).
+- 'dynStyle' attribute, which is to 'style' as 'dynClass' is to 'class'
+- Parsing of standard syntax for 'class' attributes, via specially interpreted
+  string literals
+- New optional suffix for 'rewrite' in .urp files: [-]
+- Compiler error message improvements, including simplification of types
+- New command line parameters: '-boot', '-dumpTypesOnError', '-unifyMore'
+- New .urp directives: 'linker'
+- Support for speeding up compilation by caching type inference results:
+  Run 'urweb daemon start' to spawn a background process,
+  'urweb daemon stop' to kill it.
+- Enforcement of uniqueness of top-level module names across a project
+- Adjust error message format to match Emacs compilation mode defaults
+- More HTML attributes added
+- New antiquote syntax for 'PRIMARY KEY'
+- Bug fixes and improvements to type inference and platform compatibility
+
+========
+20120329
+========
+
+- New JavaScript FFI function: setInnerHTML
+- Bug fixes
+- Documentation improvements
+
+========
+20120310
+========
+
+- 'ORDER BY RANDOM'
+- New Basis members: diffInMilliseconds, toMilliseconds
+- <radio> widget now returns 'option string' instead of 'string'
+- '-dumpSource' command-line flag
+- Bug fixes and optimization improvements
+
+========
+20120110
+========
+
+- Improvements to type inference and error messages
+- New 'dynClass' pseudo-attribute for most HTML tags
+- New 't.*' notation for selecting all columns of a table
+- New SQL functions: 'lower' and 'upper'
+- 'timeFormat' .urp directive
+- Client-side 'debug' and 'naughtyDebug' calls use a browser debug console, if available
+- Allow 'source' values to be returned by RPCs
+- Change the HTML context classification scheme in 'Basis'
+- Rename 'Top.id' to 'ident' to avoid clash with 'Basis.id'
+- More client-side function implementations
+- Some expanded reference manual sections
+- Tweak to linker command line argument order (to prevent issues with new Ubuntu versions)
+- Bug fixes
+
+========
+20111127
+========
+
+- Improvements to type inference and error messages
+- New Basis members: ceil, float, null, round, trunc
+- New SQL expression forms: 'IF..THEN..ELSE', 'COALESCE', and 'LIKE'
+- Support for the full set of HTML character entities
+- Client-side versions of some time-related functions
+- New URWEB_PG_CON environment variable
+- Allow arguments for 'con' signature items, not just declarations
+- Bug fixes and performance improvements
+- Tweaks for idiosyncrasies of OS X (like deprecated OpenSSL)
+
+========
+20110917
+========
+
+- Start of official tutorial
+- Compiler support for generating nice tutorial HTML from literate source files
+- New protocol 'static' for generating static pages
+- Replace GCCARGS 'configure' variable with CCARGS
+- Better support for compilation with Clang (including on OS X)
+- Fancier 'configure' script with versioning
+- Applications consult URWEB_STACK_SIZE environment variable to determine thread
+  stack size
+- HTML tag IDs now drawn from an abstract type
+- New Basis functions: diffInSeconds, mkMonad, onClick, onDblclick, onKeydown,
+  onKeypress, onKeyup, onMousedown, onMouseup, preventDefault, stopPropagation,
+  toSeconds
+- Add <image> tag
+- Add 'target' attribute for <a>
+- New compiler command-line option: -dumpTypes
+- New syntactic sugar for computed ORDER BY clauses
+- Bug fixes and optimization improvements
+
+========
+20110715
+========
+
+- Treat local variables the same as module-level variables, for the purpose of
+  implicit argument insertion
+- New 'noXsrfProtection' directive for .urp files
+- Non-debug builds omit source location information in error messages shown to
+  the user (but keep that information in log entries)
+- Basis.getHeader and Basis.setHeader
+- Basis.show_css_class
+- Basis.currentUrlHasQueryString
+- Make Basis.rand cryptographically secure
+- Client-side versions of Basis.now and Basis.show_time
+- Bug fixes
+- Improvements to auto-configuration and build process (now builds with LLVM's
+  Clang!)
+- Clarifications in the manual
+
+========
+20110517
+========
+
+- Cygwin compatibility
+- Compatibility with Gentoo packaging process, including a .ebuild file
+- Change typing of SQL subqueries, to indicate that they may always return NULL
+  (for no rows)
+- Syntactic sugar for GROUP BY with variable numbers of columns
+  (using 'tab.{{c}}', where 'c :: {Type}')
+- 'ALL' for SQL relational operators
+- Add nullable types to the class for valid operands for SQL arithmetic
+- 'alt' attribute for <img>
+- <sup> and <sub> HTML tags
+- Allow 'debug' and 'naughtyDebug' in client-side code, implemented with 'alert'
+- Bug fixes and optimization improvements
+
+========
+20110123
+========
+
+- Changes to encoding of SQL aggregate functions: nullable types may be
+  aggregated, and non-COUNT aggregates return nullable results.
+- SQL subqueries may apply aggregate functions to columns bound in enclosing
+  queries.
+- Switch from libmhash to OpenSSL.
+- 'cdataChar', for injecting arbitrary character codes into XML
+- 'crypt', for access to the standard UNIX password encryption routine
+- 'readUtc', for parsing time strings in the UTC time zone
+- Built-in 'time' type now stores microseconds (which for now are only used in
+  connection with Postgres timestamps).
+- Client-side URL blessing and redirection
+- 'currentUrlHasPost' function
+- Transactional 'free' functions now passed an argument indicating whether the
+  runtime system expects to retry the transaction.
+- Change tasks to allow task kind-specific inputs
+- Add 'clientLeaves' and 'periodic' task kinds
+- Support for externally-callable pages, via the 'postBody' and 'queryString'
+  types and the 'effectfulUrl' function
+- 'minHeap' and 'alwaysInline' .urp options
+- '-prefix' command-line option
+- Comments in .urp files (lines starting with '#')
+- Miscellaneous additions to the standard library
+- Bug fixes and improvements to type inference and optimization
+
+========
+20101102
+========
+
+- Polymorphic variants (see Basis.variant)
+- New 'onError' directive for .urp files
+- (* *) and <!-- --> comments in XML
+- Basis.classes, Basis.confirm, and Basis.tryDml
+- New notations ::_ and :::_, for constructor parameters of unknown kind
+- Invocations like 'urweb foo' will compile foo.ur as a single-file project,
+  even if no foo.urp exists
+- '-limit' command-line flag and 'limit' .urp directive
+- Bug fixes and optimization improvements
+
+========
+20100603
+========
+
+- Changed URL escaping convention, to avoid confusing proxies.
+  The new convention is like the normal one, but with '.' instead of '%'.
+- Changed JavaScript compilation of recursive functions to use thunks.
+  This change avoids most costs of functions not referenced on particular
+  pages, reducing loading time dramatically.
+- Support HTTP caching of application-specific JavaScript code
+- Bug fixes
+
+========
+20100506
+========
+
+- New experimental checker for information flow and access control policies
+  (See demo at http://www.impredicative.com/ur/scdv/)
+
+========
+20100401
+========
+
+- Subquery expressions and FROM items
+- Low-level support for SELECT with no FROM clause
+- Fixes for DBMS-portability of relational operators
+
+========
+20100325
+========
+
+- -verbose flag
+- COUNT(col) SQL aggregate function
+- 'benignEffectful' and 'safeGet' .urp commands
+- Remove Basis.getRequestHeader, since it can be used to circumvent cookie
+  security
+- Rename Top.foldR*X to map*X
+- Bug fixes and optimization improvements
+
+========
+20100213
+========
+
+- Improvements to 'configure'; should now fail if any uncommon but required
+  package is missing
+- Other fixes to configuration, build system, and C code portability
+- sigfile .urp directive & -sigfile command-line option
+- .urp files with no directives no longer need to begin with blank lines.
+- Other bug fixes
+
+========
+20100130
+========
+
+- Conversion to an Automake-based build system, for greater portability in
+  building shared libraries
+- -path and -root command-line flags
+- Exported page handling functions (i.e., those page-generating functions
+  appearing in the main module's signature) may now take any number of
+  arguments, including 0.
+
+========
+20100112
+========
+
+- Basis.serialized type family, for storing more types in the database
+- Basis.textBlob, for building blobs from strings
+- Basis.debug function, for server-side debug printing
+- Bug fixes & optimization improvements
+
+========
+20091230
+========
+
+- Automatic insertion of implicit arguments in more positions
+- Reifying expressions as URLs and redirecting to them explicitly
+- More syntactic sugar for SQL
+- Typing of SQL queries no longer exposes which tables were used in joins but
+  had none of their fields projected
+- Tasks
+- Dynamic linking of the runtime system
+- Optimization improvements
+- Bug fixes
+
+========
+20091203
+========
+
+- Extended cookie interface (breaks backward compatibility for 'setCookie')
+- Bug fixes
+- Extended UTF-8 characters in HTML
+
+========
+20091124
+========
+
+- Improved Internet Explorer compatibility
+
+========
+20091108
+========
+
+- Bug fixes
+- Optimization improvements
+- Removed a restriction that prevented some RPCs and calls to sleep or recv
+  from compiling
+
+========
+20091012
+========
+
+- Small bug fixes affecting MySQL and SQLite
+
+========
+20091009
+========
+
+- Bug fixes
+- Improvement to choice of line number to cite in record unification error
+  messages
+- SELECT DISTINCT
+- New extra demos: orm1 and versioned1
+
+========
+20090926
+========
+
+- Reimplemented client-side code generation to use an interpreter, rather than
+  compilation to JavaScript; this avoids common browser flaws: lack of
+  optimization of tail calls and occasional bugs in closure handling.
+- Bug fixes
+
+========
+20090919
+========
+
+- Bug fixes
+- Optimization improvements
+- Expanded grid demo in demo/more: optional columns, sorting, filtering,
+  paging, selecting rows, aggregate row
+
+========
+20090912
+========
+
+- Bug fixes
+- Optimization improvements
+- New set of extra demos in demo/more
+
+========
+20090825
+========
+
+- Many bug fixes
+- Remote procedure calls must be marked with the new 'rpc' function.
+- Some tweaks to enable usage on OSX (suggested by Paul Snively)
+
+========
+20090718
+========
+
+- New application protocols: CGI and FastCGI
+- New database backends: MySQL and SQLite
+- More JavaScript events added to tags in standard library
+- New manual section on using the foreign function interface (FFI)
+
+========
+20090623
+========
+
+- Many bug fixes
+- Mutually-recursive datatypes
+- SML-style pattern-matching syntax for "fun", "fn", and local "val"
+- Backwards-incompatible change to syntax of formal constructor parameters to
+  value-level functions, to support the previous change
+- Path map support inspired by SML/NJ CM and MLton ML Basis
+- Start of some new standard library modules
+- Some improvements to JavaScript runtime, including better error handling
+
+========
+20090505
+========
+
+- Reimplement constructor class resolution to be more general and Prolog-like
+- SQL table constraints
+- URLs
+- Client-side error handling callbacks
+- CSS
+- Signing cookie values cryptographically to thwart cross site request forgery
+- Blobs and HTTP file upload
+- SQL outer joins
+- SQL views
+- Subforms
+- C and JavaScript FFI
+- Path rewriting
+
+========
+20090405
+========
+
+- Asynchronous message-passing and the associated server-side client
+  bookkeeping
+- Reimplement parts of the client-side runtime system to avoid space leaks
+- spawn and sleep
+- Expand the constructor class instance rule format
+
+========
+20090312
+========
+
+- Replace type-level "fold" with "map"
+- Replace expression-level "fold" with folders, defined in Top and
+  supported by some special compiler inference
+- Replace guarded constructors with guarded types, introduced only by
+  guarded expression abstraction, and with a new explicit application form
+- Kind polymorphism
+- Generalize type classes to constructor classes
+- Initial compilation of client-side code to JavaScript
+- Initial support for mixed client- and server-side programming (i.e., "AJAX")
+- src/coq: Coq formalization of a core Ur-like calculus
+
+========
+20081209
+========
+
+- Optimization: Fusing page writes with calls to recursive functions
+- Optimization of bottleneck compiler phases
+- Reference manual
+- SQL arithmetic operators
+
+========
+20081120
+========
+
+- Fix bug that sometimes led to omission of initial "<html>" in pages
+- Take advantage of nested functions in some demos
+- "profile" option that may appear in .urp files, to enable gprof profiling
+- "-guided-demo" option that works like "-demo" but uses less screen space for
+  prose
+
+========
+20081118
+========
+
+- Nested function definitions
+- Primitive "time" type
+- Nullable SQL columns (via "option")
+- Cookies
+- Compiler: Specialization of functions to known arguments (especially of
+  function type)
+
+========
+20081028
+========
+
+- Add GCCARGS configure option
+
+========
+20081027
+========
+
+- On missing inputs, print an error message, but don't exit the web server.
+- Remove need for "() <-" notation.
+
+========
+20081026
+========
+
+- Change 'sed' call to work on OSX.
+- Avoid including or linking libpq files on apps that don't use SQL.

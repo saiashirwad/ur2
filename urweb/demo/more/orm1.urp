@@ -1,0 +1,6 @@
+library orm
+database dbname=test
+sql test.sql
+
+$/list
+orm1

@@ -1,0 +1,4 @@
+debug
+library clib
+
+cffi

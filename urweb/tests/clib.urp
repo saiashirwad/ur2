@@ -1,0 +1,10 @@
+ffi test
+include test.h
+jsFile test.js
+link test.o
+effectful Test.print
+serverOnly Test.foo
+clientOnly Test.bar
+effectful Test.transactional
+jsFunc Test.print=print
+jsFunc Test.bar=bar

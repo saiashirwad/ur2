@@ -1,0 +1,5 @@
+debug
+database dbname=time
+sql time.sql
+
+time

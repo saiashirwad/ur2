@@ -1,0 +1,5 @@
+library versioned
+database dbname=test
+sql versioned1.sql
+
+versioned1

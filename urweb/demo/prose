@@ -1,0 +1,376 @@
+<p><b>Ur/Web</b> is a domain-specific language for programming web applications backed by SQL databases.  It is (strongly) statically typed (like ML and Haskell) and purely functional (like Haskell).  <b>Ur</b> is the base language, and the web-specific features of Ur/Web (mostly) come only in the form of special rules for parsing and optimization.  The Ur core looks a lot like <a target="_top" href="http://sml.sourceforge.net/">Standard ML</a>, with a few <a target="_top" href="http://www.haskell.org/">Haskell</a>-isms added, and kinder, gentler versions added of many features from dependently typed languages like the logic behind <a target="_top" href="http://coq.inria.fr/">Coq</a>.  The type system is much more expressive than in ML and Haskell, such that well-typed web applications cannot "go wrong," not just in handling single HTTP requests, but across their entire lifetimes of interacting with HTTP clients.  Beyond that, Ur is unusual in using ideas from dependent typing to enable very effective metaprogramming, or programming with explicit analysis of type structure.  Many common web application components can be built by Ur/Web functions that operate on types, where it seems impossible to achieve similar code re-use in more established statically typed languages.</p>
+
+<p>The page you are currently reading is a part of the demo included with the Ur/Web sources and supporting files available from <a target="_top" href="https://github.com/urweb/urweb">GitHub</a>.  The following steps will build a local instance of the demo if you're lucky (and running a Debian-based Linux OS, which actually tend to have Ur/Web packages built in these days).  If you're not lucky, you can consult the beginning of <a target="_top" href="http://www.impredicative.com/ur/manual.pdf">the manual</a> for more detailed instructions.</p>
+
+<h6>Install System Dependencies</h6>
+
+<p>
+<blockquote><pre>sudo apt install build-essential \
+  emacs-goodies-el \
+  libgmp-dev \
+  libssl-dev \
+  libpq-dev \
+  libsqlite3-dev \
+  libicu-dev \
+  mlton \
+  sqlite3</blockquote></pre></p>
+
+<h6>Build and Install the Ur/Web Framework</h6>
+
+<p><blockquote><pre>./configure
+make
+sudo make install
+</pre></blockquote></p>
+
+<h6>Compile the Demo the Easy Way</h6>
+
+<p><blockquote><pre>$ urweb -dbms sqlite -db /path_to_db.sqlite -demo /Demo -noEmacs demo
+</blockquote></pre></p>
+
+<p>The <tt>-dbms sqlite</tt> flag indicates that instead of using the default database management system (<a target="_top" href="https://www.postgresql.org/">PostgreSQL</a>), we wish to use <a target="_top" href="https://sqlite.org/">SQLite</a> (usually unsuited for production).  The <tt>-db</tt> flag allows us to specify the file-system path to our SQLite database.  The <tt>-demo /Demo</tt> parameter indicates that we want to build a demo application that expects its URIs to begin with <tt>/Demo</tt>, while the <tt>-noEmacs</tt> parameter disables invocation of Emacs to syntax-highlight source files for HTML rendering.  The final argument <tt>demo</tt> gives the path to a directory housing Ur/Web source files (<tt>.ur</tt>, <tt>.urp</tt>, <tt>.urs</tt>, etc.).
+</p>
+
+<p>
+The following files are created during the compilation process:
+<ul>
+<li><tt>demo/demo.exe</tt>
+<li><tt>demo/out/*</tt>
+<li><tt>demo/demo.sql</tt>
+</ul>
+</p>
+
+<h6>Initialize the Database</h6>
+
+<p>
+When we compiled the demo in the last step, a <tt>demo.sql</tt> file was created for us, which contains all the information required to create a database compatible with the demo web app.  The command below will provision our SQLite database.  To see an example of where a database table is defined in source code, check out <tt>demo/crud1.ur</tt>.  Also of interest is the file <tt>demo.urp</tt>, which contains a <tt>database</tt> directive with the PostgreSQL database that the demo web server will try to connect to if database information isn't provided as command-line arguments when the application is compiled.
+
+<blockquote><pre>$ sqlite3 /path/to/database/file &lt;demo/demo.sql
+</blockquote></pre>
+</p>
+
+<h6>Boot the App</h6>
+
+Executing the binary generated above (<tt>demo/demo.exe</tt>) with no arguments will start a single-threaded server listening on port 8080.  (To answer the usual first question: the <tt>.exe</tt> prefix has nothing to do with Windows and does not mean that you compiled for the wrong OS!)  Pass the flag <tt>-h</tt> to see which options are available on such freshly built binaries.
+</p>
+<p><blockquote><pre>$ demo/demo.exe
+Database connection initialized.
+Listening on port 8080....
+</blockquote></pre>
+Test out <tt>http://localhost:8080/Demo/Demo/main</tt>, which should consist of links to the individual demos after booting the app.</p>
+</p>
+
+<h6>Serve the Static Content with a Reverse Proxy</h6>
+
+<p>The <tt>-demo</tt> version also generates some HTML in a subdirectory <tt>out</tt> of the demo directory (e.g. <tt>index.html</tt>).  It is easy to set Apache up to serve these HTML files and to proxy out to the Ur/Web web server for dynamic page requests.  This configuration works for me, where <tt>DIR</tt> is the location of an Ur/Web source distribution.  (You may also need to enable the proxy module with a command like <tt>a2enmod proxy_http</tt>.)
+
+<blockquote><pre>Alias /demo/ "DIR/demo/out/"
+
+ProxyPass /Demo/ http://localhost:8080/Demo/
+ProxyPassReverse /Demo/ http://localhost:8080/Demo/</pre></blockquote></p>
+
+<h6>Compile Individually</h6>
+
+<p>These project files can also be built separately.  For example, you could run
+
+<blockquote><pre>$ urweb demo/hello
+</pre></blockquote>
+
+to build the "Hello World" demo application.  Doing so will invite Ur/Web to seek out the various <tt>demo/hello.*</tt> files and, from them, build a binary <tt>demo/hello.exe</tt>.  The URL to access the resulting app will be <tt>http://localhost:8080/Hello/main</tt>.
+</p>
+
+<h6>This File</h6>
+<p>One of the files in the demo directory is named <tt>prose</tt>, a file describing the different demo pieces with HTML.  Some lines of <tt>prose</tt> have the form <tt><i>foo</i>.urp</tt>, naming particular project files (with the extension <tt>.urp</tt>) in that directory.  These make up the different pages of the tutorial.</p>
+
+<h6>Finally, the Demos!</h6>
+
+<p>The rest of the demo focuses on introducing Ur/Web programming, one feature at a time.  Follow the links in the lefthand frame to visit the applications, commentary, and syntax-highlighted source code.  (An Emacs mode is behind the syntax highlighting.)  I recommend visiting the applications in the order listed, since that is the order in which new concepts are introduced.</p>
+
+hello.urp
+
+<p>We must, of course, begin with "Hello World."</p>
+
+<p>The project file justs list one filename prefix, <tt>hello</tt>.  This causes both <tt>hello.urs</tt> and <tt>hello.ur</tt> to be pulled into the project.  <tt>.urs</tt> files are like <a target="_top" href="http://caml.inria.fr/ocaml/">OCaml</a> <tt>.mli</tt> files, and <tt>.ur</tt> files are like OCaml <tt>.ml</tt> files.  That is, <tt>.urs</tt> files provide interfaces, and <tt>.ur</tt> files provide implementations.  <tt>.urs</tt> files may be omitted for <tt>.ur</tt> files, in which case most permissive interfaces are inferred.</p>
+
+<p>Ur/Web features a module system very similar to those found in SML and OCaml.  Like in OCaml, interface files are treated as module system signatures, and they are ascribed to structures built from implementation files.  <tt>hello.urs</tt> tells us that we only export a function named <tt>main</tt>, taking no arguments and running a transaction that results in an HTML page.  <tt>transaction</tt> is a monad in the spirit of the Haskell IO monad, with the intent that every operation performable in <tt>transaction</tt> can be undone.  By design, Ur/Web does not provide a less constrained way of running side-effecting actions.  This particular example application will employ no side effects, but the compiler requires that all pages be generated by transactions.</p>
+
+<p>Looking at <tt>hello.ur</tt>, we see an SML-looking function definition that returns a fragment of XML, written with special syntax.  This fragment is returned to browsers that request the URI <tt>/Demo/Hello/main</tt>.  That is, we take the demo-wide prefix <tt>/Demo</tt> and add a suffix that indicates we want to call the <tt>main</tt> function in the <tt>Hello</tt> module.  This path convention generalizes to arbitrary levels of nested module definitions and functor applications (which we will see later).</p>
+
+link.urp
+
+<p>In <tt>link.ur</tt>, we see how easy it is to link to another page.  The Ur/Web compiler guarantees that all links are valid.  We just write some Ur/Web code inside an "antiquote" in our XML, denoting a transaction that will produce the new page if the link is clicked.</p>
+
+rec.urp
+
+<p>Crafting webs of interlinked pages is easy, using recursion.</p>
+
+counter.urp
+
+<p>It is also easy to pass state around via functions, in the style commonly associated with "continuation-based" web servers.  As is usual for such systems, all state is stored on the client side.  In this case, it is encoded in URLs.</p>
+
+<p>In the implementation of <tt>Counter.counter</tt>, we see the notation <tt>{[...]}</tt>, which uses type classes to inject values of different types (<tt>int</tt> in this case) into XML.  It's probably worth stating explicitly that XML fragments <i>are not strings</i>, so that the type-checker will enforce that our final piece of XML is valid.</p>
+
+form.urp
+
+<p>Here we see a basic form.  The type system tracks which form inputs we include, and it enforces that the form handler function expects a record containing exactly those fields, with exactly the proper types.</p>
+
+nested.urp
+
+<p>Here is an implementation of the tiny challenge problem from <a target="_top" href="http://www.accursoft.co.uk/web/">this web framework comparison</a>.  Using nested function definitions, it is easy to persist state across clicks.</p>
+
+cookie.urp
+
+<p>Often, it is useful to associate persistent data with particular web clients.  Ur/Web includes an easy facility for using type-safe cookies.  This example shows how to use a form to set a named cookie.</p>
+
+<p>After setting the cookie, try browsing back to this demo from the main index.  The data you entered should still be there.</p>
+
+url.urp
+
+<p>Up to this point, we haven't included a single URL in our source code.  This may be very surprising to programmers used to working with traditional web frameworks!  In Ur/Web, we avoid writing URLs explicitly wherever possible.  To link to an external web page, we rely on an abstract type <tt>url</tt>.  Strings can't be treated implicitly as URLs; rather, they must be "blessed" explicitly.  This helps avoid some classes of code injection attacks.</p>
+
+<p>Further, each Ur/Web application enforces a global condition on which strings are allowed as URLs.  The <tt>.urp</tt> file for this demo shows an example that specifies particular rules about which URLs are allowed.  You can try entering a variety of URLs on the form on the front page.  Only those satisfying the <tt>allow url</tt>/<tt>deny url</tt> conditions should be permitted.</p>
+
+css.urp
+
+<p>Ur/Web supports a structured approach to Cascading Style Sheets, where each style is a first-class value within a module.  This demo shows the importing of an external style sheet with one style.  By default, like other Ur/Web entities, the name of the style would be <tt>Css_quote</tt>.  We use the <tt>rewrite</tt> directive in the <tt>.urp</tt> file to specify an alternate name for a particular canonical module path.  The external style sheet contains a definition of a style with the alternate name that we give.</p>
+
+upload.urp
+
+<p>HTTP file upload is made convenient, via the abstract types <tt>blob</tt> and <tt>file</tt> in the standard library.  A <tt>blob</tt> is a binary sequence, and a <tt>file</tt> combines a <tt>blob</tt> with MIME type information.  An <tt>upload</tt> form input can be used to accept <tt>file</tt>s from the user.</p>
+
+<p>In the <tt>.urp</tt> file for this example, we give a whitelist of MIME types to be accepted.  The application will echo back to the user any file he uploads as one of those types.  You can try submitting other kinds of files to verify that they are rejected.</p>
+
+subforms.urp
+
+<p>In the examples so far, the number of inputs per form has been constant.  Often it is useful to have a varying set of form inputs.  Ur/Web provides the <tt>&lt;subforms&gt;</tt> and <tt>&lt;entry&gt;</tt> tags for grouping a list of forms with the same field names and types into a single, list-valued composite form.  This demo shows those tags in action, in a simple form echoing application that lets the user add and remove inputs.</p>
+
+listShop.urp
+
+<p>This example shows off algebraic datatypes, parametric polymorphism, and functors.</p>
+
+<p>The <tt>List</tt> module defines a list datatype, much in the style of SML, but with type parameters written more in Haskell style.  The types of <tt>List.length</tt> and <tt>List.rev</tt> indicate that they are polymorphic.  Types like <tt>t ::: Type -> ...</tt> indicate polymorphism, with the triple colon denoting that the value of this type parameter should be <i>inferred</i> at uses.  A double colon would mean that the type argument must be provided explicitly at uses.  In contrast to ML and Haskell, all polymorphism must be <i>declared</i> explicitly in Ur, while instantiations may be inferred at uses.</p>
+
+<p>The <tt>ListFun</tt> module defines a functor for building list editing sub-applications.  An argument to the functor <tt>Make</tt> must give the type to be stored in the lists, along with marshaling and unmarshaling functions.  In return, the functor returns an entry point function.</p>
+
+<p>The <tt>ListShop</tt> modules ties everything together by instantiating <tt>ListFun.Make</tt> with structures for integers and strings.  <tt>show</tt> and <tt>read</tt> can be used for marshaling and unmarshaling in both cases because they are type-class-generic.</p>
+
+sql.urp
+
+<p>We see a simple example of accessing a SQL database.  The project file specifies the database to connect to.</p>
+
+<p>A <tt>table</tt> declaration declares a SQL table with rows of a particular record type.  We can use embedded SQL syntax in a way that leads to all of our queries and updates being type-checked.  Indeed, Ur/Web makes strong guarantees that it is impossible to execute invalid SQL queries or make bad assumptions about the types of tables for marshaling and unmarshaling (which happen implicitly).</p>
+
+<p>The <tt>list</tt> function implements an HTML table view of all rows in the SQL table.  The <tt>queryX</tt> function takes two arguments: a SQL query and a function for generating XML fragments from query result rows.  The query is run, and the fragments for the rows are concatenated together.</p>
+
+<p>Other functions demonstrate use of the <tt>dml</tt> function, for building a transaction from a SQL DML command.  It is easy to insert antiquoted Ur code into queries and DML commands, and the type-checker catches mistakes in the types of the expressions that we insert.</p>
+
+<p>
+
+ref.urp
+
+<p>This example shows how to mix the module system with SQL to implement a kind of "abstract data type."  The functor <tt>RefFun.Make</tt> takes in a type belonging to the type class of those types that may be included in SQL.  The functor output includes an abstract type <tt>ref</tt>, along with operations for working with <tt>ref</tt>s via transactions.  In the functor implementation, we see that <tt>ref</tt> is implemented as <tt>int</tt>, treated as primary keys of a SQL table.</p>
+
+<p>The functor creates a new encapsulated SQL sequence and table on each call.  These local relations show up in the automatically generated SQL file that should be run to prepare the database for use, but they are invisible from client code.  We could change the functor to create different SQL relations, without needing to change client code.</p>
+
+<p>Note that, in <tt>ref.ur</tt>, the <tt>inj</tt> components of functor arguments are omitted.  Since these arguments are type class witnesses, the compiler infers them automatically based on the choices of <tt>data</tt>.</p>
+
+tree.urp
+
+<p>Here we see how we can abstract over common patterns of SQL queries.  In particular, since standard SQL does not help much with queries over trees, we write a function for traversing an SQL tree, building an HTML representation, based on a user-provided function for rendering individual rows.</p>
+
+<p>The signature of <tt>TreeFun.Make</tt> tells us that, to instantiate the functor, we must provide</p>
+<ol>
+        <li>A primary key type <tt>key</tt></li>
+        <li>SQL field names <tt>id</tt> (for primary keys) and <tt>parent</tt> (for parent links)</li>
+        <li>A type-level record <tt>cols</tt> of field names besides <tt>id</tt> and <tt>parent</tt></li>
+        <li>"Proofs" that <tt>id</tt> is distinct from <tt>parent</tt> and that neither of <tt>id</tt> and <tt>parent</tt> appears in <tt>cols</tt></li>
+        <li>A witness that <tt>key</tt> belongs to the type class <tt>sql_injectable_prim</tt>, which indicates that both <tt>key</tt> and <tt>option key</tt> are fair game to use with SQL</li>
+        <li>An SQL table <tt>tab</tt>, containing a field <tt>id</tt> of type <tt>key</tt>, a field <tt>parent</tt> of type <tt>option key</tt>, and every field of <tt>cols</tt></li>
+</ol>
+
+constraints.urp
+
+<p>Ur/Web supports attaching SQL table constraints to table definitions.  We've sprinkled a few such constraints throughout our examples so far, without mentioning them.  This example shows a table with all four of the supported kinds of constraints.  An application would generally try to avoid inserting data that violates constraints, but, in this example, we let you insert arbitrary data, so that you can see each of the constraints failing.</p>
+
+<ol>
+        <li>The <tt>PRIMARY KEY</tt> constraint establishes the field of the table that we expect to use as a key in looking up specific rows.  It is an error for two rows to share the same primary key.</li>
+        <li>The <tt>UNIQUE</tt> constraint is like <tt>PRIMARY KEY</tt>, with the difference being that a table may have many <tt>UNIQUE</tt> constraints but no more than one primary key.</li>
+        <li>The <tt>CHECK</tt> constraint declares a boolean assertion that must hold for every row of the table.</li>
+        <li>The <tt>FOREIGN KEY</tt> constraint declares that a row of the table references a particular column of another table, or of the same table, as we see in this example.  It's a static type error to reference a foreign key column that has no <tt>PRIMARY KEY</tt> or <tt>UNIQUE</tt> constraint.</li>
+</ol>
+
+outer.urp
+
+<p>SQL outer joins are no problem, as this demo shows.  Unlike with SQL, here we have static type inference determining for us which columns may become nullable as a result of an outer join, and the compiler will reject programs that make the wrong assumptions about that process.  The details of that nullification don't appear in this example, where the magic of type classes determines both the post-join type of each field and the right pretty-printing and parsing function for each of those types.</p>
+
+view.urp
+
+<p>SQL views are also supported with a special declaration form, analogous to <tt>table</tt>.  A multi-parameter type class <tt>fieldsOf</tt> is used to characterize places where both tables and views are allowed.  For instance, the polymorphic function <tt>list</tt> shown here lists the contents of any table or view containing just a single <tt>int</tt> column named <tt>A</tt>.</p>
+
+cookieSec.urp
+
+<p>Ur/Web guarantees that compiled applications are immune to certain kinds of <a target="_top" href="http://www.owasp.org/index.php/Top_10_2007-A5">cross site request forgery</a>.  For instance, a "phisher" might send many e-mails linking to a form that he has set up to look like your web site.  The form is connected to your web site, where it might, say, transfer money from your bank account to the phisher's account.  The phisher doesn't know your username, but, if that username is stored in a cookie, it will be sent automatically by your browser.  Ur/Web automatically signs cookie values cryptographically, with the signature included as a POST parameter and not part of a cookie, to prevent such attacks.</p>
+
+<p>This demo shows a simple mock-up of a situation where such an attack is often possible with traditional web frameworks.  You can set an arbitrary username for yourself in a cookie, and you can modify the database in a way that depends on the current cookie value.  Try getting the latter action to succeed without first setting your desired username in the cookie.  This should be roughly as impossible as cracking the particular cryptographic hash function that is used.</p>
+
+sum.urp
+
+<p>Metaprogramming is one of the most important facilities of Ur.  This example shows how to write a function that is able to sum up the fields of records of integers, no matter which set of fields the particular record has.</p>
+
+<p>Ur's support for analysis of types is based around extensible records, or <i>row types</i>.  In the definition of the <tt>sum</tt> function, we see the type parameter <tt>fs</tt> assigned the <i>kind</i> <tt>{Unit}</tt>, which stands for records of types of kind <tt>Unit</tt>.  The <tt>Unit</tt> kind has only one inhabitant, <tt>()</tt>.  The kind <tt>Type</tt> is for "normal" types.</p>
+
+<p>The <tt>sum</tt> function also takes an argument <tt>fl</tt> of type <tt>folder fs</tt>.  Folders represent permutations of the elements of type-level records.  We can use a folder to iterate over a type-level record in the order indicated by the permutation.</p>
+
+<p>The unary <tt>$</tt> operator is used to build a record <tt>Type</tt> from a <tt>{Type}</tt> (that is, the kind of records of types).  The library function <tt>mapU</tt> takes in a type <i>t</i> of kind <t>K</t> and a <tt>{Unit}</tt> <i>r</i>, and it builds a <tt>{K}</tt> as long as <i>r</i>, where every field is assigned value <i>t</i>.</p>
+
+<p>Another library function <tt>foldUR</tt> is defined at the level of expressions, while <tt>mapU</tt> is a type-level function.  <tt>foldUR</tt> takes 7 arguments, some of them types and some values.  Type arguments are distinguished by being written within brackets.  The arguments to <tt>foldUR</tt> respectively tell us:
+
+<ol>
+<li>The type we will assign to each record field</li>
+<li>The type of the final and all intermediate results of the fold, expressed as a function over the portion of the <tt>{Unit}</tt> that has been traversed so far</li>
+<li>A function that updates the accumulator based on the current record field name, the rest of the input record type, the current record field value, and the current accumulator</li>
+<li>The initial accumulator value</li>
+<li>The input record type</li>
+<li>A folder for that type</li>
+<li>The input record value</li>
+</ol>
+
+An unusual part of the third argument is the syntax <tt>[t1 ~ t2]</tt> within a multi-argument <tt>fn</tt>.  This syntax denotes a proof that row types <tt>t1</tt> and <tt>t2</tt> have no field names in common.  The proof is not named, because it is applied automatically as needed.  Indeed, the proof appears unused in this case, though it is actually needed to ensure the validity of some inferred types, as well as to unify with the type of <tt>foldUR</tt>.</p>
+
+<p>The general syntax for constant row types is <tt>[Name1 = t1, ..., NameN = tN]</tt>, and there is a shorthand version <tt>[Name1, ..., NameN]</tt> for records of <tt>Unit</tt>s.</p>
+
+<p>With <tt>sum</tt> defined, it is easy to make some sample calls.  The form of the code for <tt>main</tt> does not make it apparent, but the compiler must "reverse engineer" the appropriate <tt>{Unit}</tt> from the <tt>{Type}</tt> available from the context at each call to <tt>sum</tt>.  The compiler also infers a <tt>folder</tt> for each call, guessing at the desired permutations by examining the orders in which field names are written in the code.</p>
+
+tcSum.urp
+
+<p>It's easy to adapt the last example to use type classes, such that we can sum the fields of records based on any numeric type.</p>
+
+metaform1.urp
+
+<p>We can use metaprogramming with row types to build HTML forms (and their handlers) generically.  The functor <tt>Metaform.Make</tt> takes in a unit row <tt>fs</tt> and a value-level record <tt>names</tt> assigning string names to the fields of <tt>fs</tt>.  The functor implementation builds a form handler with a library function <tt>foldURX2</tt>, which runs over two value-level records in parallel, building an XML fragment.</p>
+
+<p>The form itself is generated using the more primitive <tt>foldUR</tt>.  We see the type <tt>xml form [] (mapU string cols)</tt> as the result of the fold.  This is the type of XML fragments that are suitable for inclusion in forms, require no form fields to be defined on entry, and themselves define form fields whose names and types are given by <tt>mapU string cols</tt>.  The <tt>useMore</tt> function "weakens" the type of an XML fragment, so that it "pretends" to require additional fields as input.  This weakening is necessary to accommodate the general typing rule for concatenating bits of XML.</tt>
+<p>The functor use in <tt>Metaform1</tt> is trivial.  The compiler infers the values of the structure members <tt>fs</tt> and <tt>fl</tt> from the type of the value provided for <tt>names</tt>.</p>
+
+metaform2.urp
+
+<p>This example showcases code reuse by applying the same functor as in the last example.  The <tt>Metaform2</tt> module mixes pages from the functor with some new pages of its own.</p>
+
+crud1.urp
+
+<p>This example pulls together much of what we have seen so far.  It involves a generic "admin interface" builder.  That is, we have the <tt>Crud.Make</tt> functor, which takes in a description of a table and outputs a sub-application for viewing and editing that table.</p>
+
+<p>The signature of <tt>Crud.Make</tt> is based around a type function <tt>colMeta</tt>, which describes which supporting values we need for each column.  This function is declared with the keyword <tt>con</tt>, which stands for "constructor," the general class of "compile-time things" that includes types.  An argument to <tt>colMeta</tt> has kind <tt>(Type * Type)</tt>, which means that it must be a type-level tuple.  The first type is how the column is represented in SQL, and the second is how we represent it in HTML forms.  In order, the components of the resulting record give:
+
+<ol>
+<li>A display name</li>
+<li>A way of pretty-printing values of the column</li>
+<li>A way of generating an HTML form widget to input this column</li>
+<li>A way of generating an HTML form widget with an initial value specified</li>
+<li>A way of parsing values of the column from strings</li>
+<li>A type class witness, showing that the SQL representation can really be included in SQL</li>
+</ol></p>
+
+<p>The function <tt>colsMeta</tt> lifts <tt>colMeta</tt> over type-level records of type pairs.  The <tt>Crud</tt> module also defines reasonable default <tt>colMeta</tt> values for some primitive types.</p>
+
+<p>The functor signature tells us (in order) that an input must contain:
+
+<ol>
+<li>A type pair record <tt>cols</tt></li>
+<li>A proof that <tt>cols</tt> does not contain a field named <tt>Id</tt></li>
+<li>A SQL table <tt>tab</tt> with an <tt>Id</tt> field of type <tt>int</tt> and other fields whose names and types are read off of <tt>cols</tt></li>
+<li>A display title for the admin interface</li>
+<li>A record of meta-data for the columns</li>
+</ol></p>
+
+<p>Looking at <tt>crud1.ur</tt>, we see that a use of the functor is almost trivial.  Only the value components of the argument structure must be provided.  The column row type is inferred, and the disjointness constraint is proved automatically.</p>
+
+<p>We won't go into detail on the implementation of <tt>Crud.Make</tt>.  The types of the functions used there can be found in the signatures of the built-in <tt>Basis</tt> module and the <tt>Top</tt> module from the standard library.  The signature of the first and the signature and implementation of the second can be found in the <tt>lib/ur</tt> directory of the Ur/Web distribution.</p>
+
+crud2.urp
+
+<p>This example shows another application of <tt>Crud.Make</tt>.  We mix one standard column with one customized column.  We write an underscore for the <tt>Inject</tt> field of meta-data, since the type class facility can infer that witness.</p>
+
+crud3.urp
+
+<p>One thing that is unclear from the previous examples is how to provide more complex, multi-input widgets for taking input meant for particular fields.  The signature of <tt>Crud.Make</tt> forces every widget to define exactly one input.  The <tt>&lt;subform&gt;</tt> tag, the simpler cousin of the <tt>&lt;subforms&gt;</tt> tag that we saw earlier, provides a fix for this problem.  Via <tt>&lt;subform&gt;</tt>, an arbitrary form can be turned into a single record-valued input.</p>
+
+<p>We use that possibility here to define a silly widget for a <tt>string</tt> column, which concatenates the values entered into two different textboxes.</p>
+
+alert.urp
+
+<p>Ur/Web makes it easy to write code whose execution should be distributed between the web server and client web browsers.  Server-side code is compiled to efficient native code, and client-side code is compiled to JavaScript.  Ur/Web programmers don't need to worry about these details, because the language and standard library provide a uniform ML-like interface for the whole process.</p>
+
+<p>Here's an example of a button that, when clicked, opens an alert dialog on the client.</p>
+
+react.urp
+
+<p>Most client-side JavaScript programs modify page contents imperatively, but Ur/Web is based on functional-reactive programming instead.  Programs allocate data sources and then describe the page as a pure function of those data sources.  When the sources change, the page changes automatically.</p>
+
+<p>Here's an example where a button modifies a data source that affects some text on the page.  The affected portion of the page is indicated with the pseudo-HTML tag <tt>dyn</tt>, whose <tt>signal</tt> attribute specifies one of these pure functions over mutable sources.  A source containing data of type <tt>t</tt> has type <tt>source t</tt> and is created with the <tt>source</tt> operation within the <tt>transaction</tt> monad.  Functions over sources are represented in the monad <tt>signal</tt>.  Like in Haskell, we overload monad notations, so that the same return and bind operators can be used to write signals and transactions.  The <tt>signal</tt> function coerces a source to a signal.</p>
+
+listEdit.urp
+
+<p>This is a more involved functional-reactive example, involving recursive data structures that contain sources.  We build a list editor similar to the one from the <tt>ListShop</tt> example, but with all editing happening on the client side.</p>
+
+<p>The central data structure is the <tt>rlist</tt>, a list whose individual elements are sources, enabling fine-grained mutation.  Every rlist is either nil or is a cons cell made up of a source for a string data element, another source to serve as a scratchpad for GUI-based edits to the data element, and a final source that stores the remainder of the list.</p>
+
+<p>The main program provides operations to append to a list and to edit the data stored at any cell of the list.  Append is implemented by maintaining a source <tt>head</tt>, which points to the first list element; and a source <tt>tailP</tt>, which points to a <tt>source rlist</tt> where we should place the next appended node.</p>
+
+increment.urp
+
+<p>Here's an example where client-side code needs to run more code on the server.  We maintain a (server-side) SQL sequence.  When the user clicks a button, an AJAX request increments the remote sequence and gets the new value.</p>
+
+noisy.urp
+
+<p>This example shows how easy it is to make the flow of control "ping pong" back and forth between the client and the server.  Clicking a button triggers three queries to the server, with an alert generated after each query.</p>
+
+batch.urp
+
+<p>This example shows more of what is possible with mixed client/server code.  The application is an editor for a simple database table, where additions of new rows can be batched in the client, before a button is clicked to trigger a mass addition.</p>
+
+batchG.urp
+
+<p>We can redo the last example with a generic component, like we did in the <tt>Crud</tt> examples.  The module <tt>BatchFun</tt> is analogous to the <tt>Crud</tt> module.  It contains a functor that builds a batching editor, when given a suitable description of a table.</p>
+
+<p>The signature of the functor is the same as for <tt>Crud</tt>.  We change the definition of <tt>colMeta</tt> to reflect the different kinds of column metadata that we need.  Each column is still described by a pair of types, and the first element of each pair still gives the SQL type for a column.  Now, however, the second type in a pair gives a type of <i>local state</i> to be used in a reactive widget for inputing that column.</p>
+
+<p>The first three fields of a <tt>colMeta</tt> record are the same as for <tt>Crud</tt>.  The rest of the fields are:</p>
+<ol>
+        <li><tt>NewState</tt>, which allocates some new widget local state</li>
+        <li><tt>Widget</tt>, which produces a reactive widget from some state</li>
+        <li><tt>ReadState</tt>, which reads the current value of some state to determine which SQL value it encodes</li>
+</ol>
+
+<p><tt>BatchFun.Make</tt> handles the plumbing of allocating the local state, using it to create widgets, and reading the state values when the user clicks "Batch it."</p>
+
+<p><tt>batchG.ur</tt> contains an example instantiation, which is just as easy to write as in the <tt>Crud1</tt> example.</p>
+
+threads.urp
+
+<p>Ur/Web makes it easy to write multi-threaded client-side code.  This example demonstrates two threads writing to a page at once.</p>
+
+<p>First, we define a useful component for sections of pages that can have lines of text added to them dynamically.  This is the <tt>Buffer</tt> module.  It contains an abstract type of writable regions, along with functions to create a region, retrieve a signal representing its HTML rendering, and add a new line to it.</p>
+
+<p>The entry point to the main module <tt>Threads</tt> begins by creating a buffer.  The function <tt>loop</tt> implements writing to that buffer periodically, incrementing a counter each time.  The arguments to <tt>loop</tt> specify a prefix for the messages and the number of milliseconds to wait between writes.</p>
+
+<p>We specify some client-side code to run on page load using the <tt>onload</tt> attribute of <tt>&lt;body&gt;</tt>.  The <tt>onload</tt> code in this example spawns two separate threads running the <tt>loop</tt> code with different prefixes, update intervals, and starting counters.</p>
+
+<p>Old hands at concurrent programming may be worried at the lack of synchronization in this program.  Ur/Web uses <i>cooperative multi-threading</i>, not the more common <i>preemptive</i> multi-threading.  Only one thread runs at a time, and only particular function calls can trigger context switches.  In this example, <tt>sleep</tt> is the only such function that appears.</p>
+
+roundTrip.urp
+
+<p>So far, we've seen examples of client-side code triggering the execution of server-side code.  Such remote calls only happen in response to client-side events.  It is often useful to allow a client to trigger events on other clients, and Ur/Web facilitates this with a simple asynchronous message-passing facility.  The current example introduces the basics of message-passing with a trivial use case, and the next example shows a more realistic case where several clients can communicate.</p>
+
+<p>We are going to provide a silly service where a client can send messages to the server, which the server then echoes back to the client.  The SQL table <tt>channels</tt> stores a mapping from client IDs to message channels.  The abstract type <tt>client</tt> holds unique client IDs, which Ur/Web generates automatically as needed.  A <tt>channel <i>T</i></tt> is a channel to which messages of type <tt><i>T</i></tt> can be sent.  Every channel belongs to a single client; anyone can send to a channel, but only the channel's owner can read the messages.  Every client is associated with a particular open page on a particular web browser somewhere.  Since web browsing sessions are ephemeral, clients and their channels are garbage-collected automatically as the web server loses contact with browsers.  When a client is garbage-collected, any database row mentioning it or one of its channels is deleted.  It's also possible to include <tt>option client</tt>s (and likewise for channels) in databases, in which case such columns are merely nulled out when they refer to dead clients.</p>
+
+<p>The <tt>main</tt> function begins by retrieving the current client ID, allocating a new channel, and associating that channel with the current client in the database.  Next, we allocate a buffer and return the page, which in its <tt>onload</tt> attribute starts two loops running in parallel.  In contrast to in the last example, here we only use <tt>spawn</tt> with the call to the first loop, since every client-side event handler is implicitly started in a new thread.</tt>
+
+<p>The first loop, <tt>receiver</tt>, repeatedly reads messages from the channel and writes them to the buffer.  The second loop, <tt>sender</tt>, periodically sends messages to the channel.  Client code can't send messages directly.  Instead, we must use server-side functions to do the sending.  Clients aren't trusted to pass channels to the server, so our server-side function <tt>writeBack</tt> instead keys off of the client ID, looking up the corresponding channel in the database.</p>
+
+chat.urp
+
+<p>This example provides a simple anonymous online chatting system, with multiple named channels.</p>
+
+<p>First, we build another useful component.  Recall that each channel has an owning client, who has the exclusive ability to read messages sent to it.  On top of that functionality, we can build a kind of broadcast channel that accepts multiple subscribers.  The <tt>Broadcast</tt> module contains a functor with such an implementation.  We instantiate the functor with the type of data we want to send over the channel.  The functor output gives us an abstract type of "topics," which are subscribable IDs.  When a client subscribes to a topic, it is handed a channel that it can use to read new messages on that topic.  We also have an operation to count the number of subscribers to a topic.  This number shouldn't be treated as too precise, since some clients that have surfed away from the application may still be considered subscribed until a timeout period elapses.</p>
+
+<p>The main <tt>Chat</tt> application includes some standard management of a table of named channels.  All of the interesting client-server work is done with the <tt>recv</tt> function and with the functions provided by <tt>Broadcast</tt>.</p>
